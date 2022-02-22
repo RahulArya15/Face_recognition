@@ -77,11 +77,18 @@ def gen_frames():
     frame = buffer.tobytes()
     yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+@app.route('/mark', methods=['GET', 'POST'])  #routing to attendance page
+def mark():
+    return render_template('mark.html')
 
+@app.route('/download', methods=['GET', 'POST'])  #routing to see attendance
+def mark():
+    return render_template('mark.html')
 
-@app.route('/')
+@app.route('/')  #routing to main page
 def index():
     return render_template('index.html')
+
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
