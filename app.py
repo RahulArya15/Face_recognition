@@ -1,5 +1,5 @@
-
-
+import textwrap
+import pyodbc
 from flask import Flask, render_template, Response
 import cv2
 import numpy as np
@@ -8,6 +8,8 @@ import os
 from datetime import datetime
 
 app=Flask(__name__)
+
+#loading persons faces
 path = 'images'
 images = []
 personNames = []
@@ -19,6 +21,47 @@ for cu_img in myList:
     personNames.append(os.path.splitext(cu_img)[0])
 print(personNames)
 
+#setting up sql
+driver = 'ODBC Driver 18 for SQL Server'
+
+#specify the server name and database name
+server_name='attendancebyface'
+database_name='attendance'
+
+#creating a server string
+server = '{server_name}.database.windows.net,1433' .format(server_name=server_name)
+
+#defining username and password
+username = "rahul"
+password = "Attendance@123"
+
+#create the full connection string.
+connection_string = textwrap.dedent('''
+    Driver={driver};
+    Server={server};
+    Database={database};
+    Uid={username};
+    Pwd={password};
+    Encrypt=yes;
+    TrustServerCertificate=no;
+    Connection Timeout=30;
+'''.format(
+    driver=driver,
+    server=server,
+    database=database_name,
+    username=username,
+    password=password,
+)
+)
+
+#create new PYODBC connection object
+cnxn: pyodbc.Connection = pyodbc.connect(connection_string)
+
+cnxn.autocommit = True
+
+#create a new cursor object from connection
+crsr : pyodbc.Cursor = cnxn.cursor()
+
 
 def faceEncodings(images):
     encodeList = []
@@ -28,8 +71,25 @@ def faceEncodings(images):
         encodeList.append(encode)
     return encodeList
 
-
 def attendance(name):
+    #defining insert query
+    insert_sql="INSERT INTO Attendance (name,time) VALUES( ?,?)"
+
+    time_now = datetime.now()
+    tStr = time_now.strftime('%H:%M:%S')
+    dStr = time_now.strftime('%d/%m/%Y')
+
+    #define record sets
+    records=[(name,tStr),]
+     
+    #Execute insert statement
+    crsr.executemany(insert_sql, records)
+
+    #commiting
+    crsr.commit()
+
+
+'''def attendance(name):
     with open('Attendance.csv', 'r+') as f:
         myDataList = f.readlines()
         nameList = []
@@ -41,6 +101,7 @@ def attendance(name):
             tStr = time_now.strftime('%H:%M:%S')
             dStr = time_now.strftime('%d/%m/%Y')
             f.writelines(f'\n{name},{tStr},{dStr}')
+'''
 
 
 encodeListKnown = faceEncodings(images)
@@ -82,8 +143,8 @@ def mark():
     return render_template('mark.html')
 
 @app.route('/download', methods=['GET', 'POST'])  #routing to see attendance
-def mark():
-    return render_template('mark.html')
+def get():
+    return render_template('attendance.html')
 
 @app.route('/')  #routing to main page
 def index():
