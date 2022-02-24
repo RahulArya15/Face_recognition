@@ -1,6 +1,6 @@
 import textwrap
 import pyodbc
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 import cv2
 import numpy as np
 import face_recognition
@@ -73,14 +73,14 @@ def faceEncodings(images):
 
 def attendance(name):
     #defining insert query
-    insert_sql="INSERT INTO Attendance (name,time) VALUES( ?,?)"
+    insert_sql="INSERT INTO Attendance (name,time,date) VALUES( ? , ? , ?)"
 
     time_now = datetime.now()
     tStr = time_now.strftime('%H:%M:%S')
-    dStr = time_now.strftime('%d/%m/%Y')
+    dStr = time_now.strftime('%Y-%m-%d')
 
     #define record sets
-    records=[(name,tStr),]
+    records=[(name,tStr,dStr),]
      
     #Execute insert statement
     crsr.executemany(insert_sql, records)
@@ -146,10 +146,11 @@ def mark():
 #to see the attendance
 @app.route('/view', methods=['GET', 'POST'])
 def view():
-    select_sql="Select * From Attendance"
+    date = (request.form['date'])
+    select_sql="Select * From Attendance WHERE date = " + date
     crsr.execute(select_sql)
     data = crsr.fetchall()
-    return render_template('view.html', value=data)
+    return render_template('view.html', value=data, dates= date)
 
 #routing to see attendance
 @app.route('/download', methods=['GET', 'POST'])  
