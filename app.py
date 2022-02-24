@@ -89,6 +89,7 @@ def attendance(name):
     crsr.commit()
 
 
+
 '''def attendance(name):
     with open('Attendance.csv', 'r+') as f:
         myDataList = f.readlines()
@@ -142,13 +143,23 @@ def gen_frames():
 def mark():
     return render_template('mark.html')
 
-@app.route('/download', methods=['GET', 'POST'])  #routing to see attendance
+#to see the attendance
+@app.route('/view', methods=['GET', 'POST'])
+def view():
+    select_sql="Select * From Attendance"
+    crsr.execute(select_sql)
+    data = crsr.fetchall()
+    return render_template('view.html', value=data)
+
+#routing to see attendance
+@app.route('/download', methods=['GET', 'POST'])  
 def get():
     return render_template('attendance.html')
 
-@app.route('/')  #routing to main page
+#routing to main page
+@app.route('/')  
 def index():
-    return render_template('index.html')
+    return render_template('welcome.html')
 
 @app.route('/video_feed')
 def video_feed():
