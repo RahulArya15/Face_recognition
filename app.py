@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import face_recognition
 import os
+#import pandas as pd
 from datetime import datetime
 
 app=Flask(__name__)
@@ -145,6 +146,8 @@ def gen_frames():
     frame = buffer.tobytes()
     yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+
+
 @app.route('/mark', methods=['GET', 'POST'])  #routing to attendance page
 def mark():
     return render_template('mark.html')
@@ -158,10 +161,16 @@ def view():
     data = crsr.fetchall()
     return render_template('view.html', value=data, dates= date)
 
+
 #routing to see attendance
 @app.route('/download', methods=['GET', 'POST'])  
 def get():
     return render_template('attendance.html')
+#sending mail
+@app.route('/send_mail')
+def send_mail():
+    msg="send"
+    return msg
 
 #routing to main page
 @app.route('/')  
