@@ -1,3 +1,5 @@
+from logging import NullHandler
+from operator import ne
 import textwrap
 import pyodbc
 from flask import Flask, render_template, Response, request
@@ -72,22 +74,26 @@ def faceEncodings(images):
     return encodeList
 
 def attendance(name):
-    #defining insert query
-    insert_sql="INSERT INTO Attendance (name,time,date) VALUES( ? , ? , ?)"
-
     time_now = datetime.now()
     tStr = time_now.strftime('%H:%M:%S')
     dStr = time_now.strftime('%Y-%m-%d')
+    #for checking if name already exists on that day
+    check_sql = "SELECT * FROM Attendance where name = '{name}' and date = '{date}' ".format(name= name, date = dStr)
+    crsr.execute(check_sql)
+    present = crsr.fetchall()
 
-    #define record sets
-    records=[(name,tStr,dStr),]
-     
-    #Execute insert statement
-    crsr.executemany(insert_sql, records)
+    if len(present)==0:
+        #defining insert query
+        insert_sql="INSERT INTO Attendance (name,time,date) VALUES( ? , ? , ?)"
 
-    #commiting
-    crsr.commit()
+        #define record sets
+        records=[(name,tStr,dStr),]
+            
+        #Execute insert statement
+        crsr.executemany(insert_sql, records)
 
+        #commiting
+        crsr.commit()
 
 
 '''def attendance(name):
@@ -147,7 +153,7 @@ def mark():
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     date = (request.form['date'])
-    select_sql="Select * From Attendance WHERE date = " + date
+    select_sql="Select * From Attendance WHERE date = '{date}'".format(date = date)
     crsr.execute(select_sql)
     data = crsr.fetchall()
     return render_template('view.html', value=data, dates= date)
