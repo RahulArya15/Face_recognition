@@ -1,3 +1,4 @@
+from email import message
 from logging import NullHandler
 from operator import ne
 import textwrap
@@ -7,10 +8,24 @@ import cv2
 import numpy as np
 import face_recognition
 import os
-#import pandas as pd
+import pandas as pd
 from datetime import datetime
+from flask_mail import Mail, Message
 
 app=Flask(__name__)
+
+
+data = [tuple()]
+mail = Mail(app)
+#configuration of mail
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'byfaceattendance@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Attendance@123'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config[' MAIL_ASCII_ATTACHMENTS'] = True
+mail = Mail(app)
 
 #loading persons faces
 path = 'images'
@@ -96,22 +111,6 @@ def attendance(name):
         #commiting
         crsr.commit()
 
-
-'''def attendance(name):
-    with open('Attendance.csv', 'r+') as f:
-        myDataList = f.readlines()
-        nameList = []
-        for line in myDataList:
-            entry = line.split(',')
-            nameList.append(entry[0])
-        if name not in nameList:
-            time_now = datetime.now()
-            tStr = time_now.strftime('%H:%M:%S')
-            dStr = time_now.strftime('%d/%m/%Y')
-            f.writelines(f'\n{name},{tStr},{dStr}')
-'''
-
-
 encodeListKnown = faceEncodings(images)
 print('All Encodings Complete!!!')
 
@@ -146,7 +145,10 @@ def gen_frames():
     frame = buffer.tobytes()
     yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-
+def convert(data):
+    df = pd.DataFrame(data)
+    file_name = 'attendance.xlsx'
+    df.to_excel(file_name)
 
 @app.route('/mark', methods=['GET', 'POST'])  #routing to attendance page
 def mark():
@@ -156,8 +158,9 @@ def mark():
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     date = (request.form['date'])
-    select_sql="Select * From Attendance WHERE date = '{date}'".format(date = date)
+    select_sql="Select name, time From Attendance WHERE date = '{date}'".format(date = date)
     crsr.execute(select_sql)
+    global data
     data = crsr.fetchall()
     return render_template('view.html', value=data, dates= date)
 
@@ -166,11 +169,24 @@ def view():
 @app.route('/download', methods=['GET', 'POST'])  
 def get():
     return render_template('attendance.html')
+
 #sending mail
-@app.route('/send_mail')
+@app.route('/send_mail', methods = ['GET', 'POST'])
 def send_mail():
-    msg="send"
-    return msg
+
+    convert(data)
+    email = request.form['email']
+    
+    msg = Message(
+        'Hello',
+        sender = 'byfaceattendance@gmail.com',
+        recipients = ['15rahul.ra@gmail.com']
+    )
+    with app.open_resource("attendance.xlsx") as fp:
+        msg.attach("attendance.xlsx","attendance/xlsx", fp.read())
+    mail.send(msg)
+    return "mail sent"
+    
 
 #routing to main page
 @app.route('/')  
@@ -180,5 +196,7 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
 if __name__=='__main__':
     app.run(debug=True)

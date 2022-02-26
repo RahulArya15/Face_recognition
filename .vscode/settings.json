@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/94e42914-4d20-4bd8-b2aa-d4dd52976f2b/resourceGroups/DefaultResourceGroup-CAU/providers/Microsoft.Web/sites/attendancebyface",
+    "appService.deploySubpath": "."
+}
