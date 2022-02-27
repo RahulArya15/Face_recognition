@@ -1,6 +1,4 @@
 from email import message
-from logging import NullHandler
-from operator import ne
 import textwrap
 import pyodbc
 from flask import Flask, render_template, Response, request
@@ -185,11 +183,11 @@ def send_mail():
     with app.open_resource("attendance.xlsx") as fp:
         msg.attach("attendance.xlsx","attendance/xlsx", fp.read())
     mail.send(msg)
-    return "mail sent"
+    return render_template('sent.html')
     
 
 #routing to main page
-@app.route('/')  
+@app.route('/', methods =['Get', 'Post'])  
 def index():
     return render_template('welcome.html')
 

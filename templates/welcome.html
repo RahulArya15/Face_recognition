@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html>
-    <style>
-        h1{ text-align: center; }
-    </style>
-
-
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static',filename='style/looks.css') }}">
+    </head>
     <body>
         <h1> Welcome to Attendance system</h1>
-
+        <hr>
         <form action="/mark" method='post'>
             <input type="submit" value="Mark Attendance">
         </form>
-
+        <br>
         <form action="/download" method='post'>
             <input type="submit" value="Download Attendance">
         </form>

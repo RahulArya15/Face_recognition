@@ -1,0 +1,59 @@
+h1
+{
+        text-align: center;
+}
+h3
+{
+    text-align: center;
+    color: black;
+    background-color: burlywood;
+}
+body
+{
+    background-image: url('background2.jpg');
+    background-size: cover;
+
+}
+form
+{
+    text-align: center;
+}
+input[type=submit]
+{
+    background-color: grey;
+    color: black;
+    padding: 16px 32px;
+    cursor: pointer;
+    font-size: 15px;
+
+}
+input[type=email]
+{
+    background-color: rgb(255, 255, 255);
+    color: black;
+    padding: 16px 32px;
+    cursor: pointer;
+    font-size: 15px;
+
+}
+img.center
+{
+        border: 10px solid black;
+        display: block;
+        margin: 0 auto;
+}
+input[type=date]
+{
+    padding: 14px 32px;
+}
+table
+{
+    background-color: burlywood;
+    border: 1px solid black;
+    width: "100%"
+}
+.center 
+{
+    margin-left: auto;
+    margin-right: auto;
+}

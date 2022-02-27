@@ -1,8 +1,11 @@
-<!DOCTYPE html>
 <html>
+    <head>
+        <link rel="stylesheet" href="{{url_for('static',filename='style/looks.css')}}">
+    </head>
         <body>
             <h1>
                 Select the date of Attendance
+                <hr>
             </h1>
             
             <form action="/view" method='post'>
@@ -10,5 +13,4 @@
                 <input type="submit" value="View">
             </form>
         </body>
-    </head>
 </html>
