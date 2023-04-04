@@ -11,8 +11,8 @@ database_name='attendance'
 server = '{server_name}.database.windows.net,1433' .format(server_name=server_name)
 
 #define username and password
-username = "rahul"
-password = "Attendance@123"
+username = #username
+password = #password
 
 #create the full connection string.
 connection_string = textwrap.dedent('''
