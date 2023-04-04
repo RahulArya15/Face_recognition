@@ -18,8 +18,8 @@ mail = Mail(app)
 #configuration of mail
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'byfaceattendance@gmail.com'
-app.config['MAIL_PASSWORD'] = 'Attendance@123'
+app.config['MAIL_USERNAME'] = #your email id here
+app.config['MAIL_PASSWORD'] = #your password here
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config[' MAIL_ASCII_ATTACHMENTS'] = True
@@ -48,8 +48,8 @@ database_name='attendance'
 server = '{server_name}.database.windows.net,1433' .format(server_name=server_name)
 
 #defining username and password
-username = "rahul"
-password = "Attendance@123"
+username = #username
+password = #password
 
 #create the full connection string.
 connection_string = textwrap.dedent('''
@@ -177,8 +177,8 @@ def send_mail():
     
     msg = Message(
         'Hello',
-        sender = 'byfaceattendance@gmail.com',
-        recipients = ['15rahul.ra@gmail.com']
+        sender = '''email id''',
+        recipients = ['''email id''']
     )
     with app.open_resource("attendance.xlsx") as fp:
         msg.attach("attendance.xlsx","attendance/xlsx", fp.read())
