@@ -1,1 +1,3 @@
-I have implemented a cutting-edge facial recognition model for the purpose of face identification. To efficiently manage and store attendance records, I have leveraged the powerful Microsoft Azure cloud SQL platform. In addition, to facilitate seamless attendance retrieval, I have integrated the Gmail SMTP server. This combination of advanced technologies ensures a robust and user-friendly attendance tracking system.
+• Developed a cloud-based attendance system with face recognition technology with Python, enabling accurate and efficient tracking of attendance.
+• Leveraged Flask’s lightweight framework with HTML and CSS for seamless userinteraction.
+• Used Microsoft Azure for attendance record storage and integrated SMTP for email-based record delivery
